@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DherikUrbanHome POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f4;--sf:#fff;--tx:#10222b;--mu:#5b6b73;--pr:#0b4a5a;--pr2:#073440;--ac:#f08a1c;--ok:#1f9d55;--wa:#d98a00;--er:#d33;--bd:#d6dee2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1a20;--sf:#15262e;--tx:#e8f0f3;--mu:#93a6af;--bd:#2a404a}}
+:root[data-theme=dark]{--bg:#0d1a20;--sf:#15262e;--tx:#e8f0f3;--mu:#93a6af;--bd:#2a404a}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px Poppins,system-ui,sans-serif}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:10px;padding:10px 14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ac)}
+button.p{background:var(--pr);color:#fff;border-color:var(--pr)}button.a{background:var(--ac);color:#1b1000;border-color:var(--ac);font-weight:600}
+button.g{background:var(--ok);color:#fff;border-color:var(--ok)}button.r{color:var(--er)}button:disabled{opacity:.4;cursor:not-allowed}
+input,select{font:inherit;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--sf);color:var(--tx);width:100%}
+#app{height:100%;display:flex;flex-direction:column}
+header{background:var(--pr2);color:#fff;display:flex;align-items:center;gap:8px;padding:8px 12px;flex-wrap:wrap}
+header b{font-size:16px}header .sp{flex:1}header button{background:transparent;color:#fff;border-color:#ffffff55;padding:6px 10px}
+header button.on{background:var(--ac);color:#1b1000;border-color:var(--ac)}
+.pill{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}.pill.ok{background:var(--ok)}.pill.off{background:var(--er)}
+main{flex:1;min-height:0;display:flex}
+.L{flex:1;display:flex;flex-direction:column;min-width:0;padding:10px;gap:8px}
+.R{width:370px;background:var(--sf);border-left:1px solid var(--bd);display:flex;flex-direction:column;padding:10px;gap:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.tabs button{white-space:nowrap;padding:7px 12px}.tabs button.on{background:var(--pr);color:#fff}
+.grid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;align-content:start}
+.tile{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px;min-height:118px}
+.tile .em{font-size:30px}.tile .n{font-weight:600;font-size:13px;line-height:1.25}.tile .pr{color:var(--pr);font-weight:700}
+.st{font-size:11px;color:var(--mu)}.st.low{color:var(--wa);font-weight:600}.st.out{color:var(--er);font-weight:600}
+.cart{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px;padding:8px;border:1px solid var(--bd);border-radius:10px}
+.line .q{display:flex;align-items:center;gap:6px}.line .q button{padding:2px 10px;font-size:18px}
+.tot{border-top:2px solid var(--bd);padding-top:8px}.tot div{display:flex;justify-content:space-between;margin:2px 0}.tot .big{font-size:22px;font-weight:700}
+.row{display:flex;gap:6px}.row>*{flex:1}
+.chg{font-size:18px;padding:16px;width:100%}
+.ov{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:9;padding:12px}
+.md{background:var(--sf);border-radius:14px;padding:16px;width:min(560px,100%);max-height:92%;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.md h3{margin:0}.q5{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pg{padding:14px;overflow:auto;flex:1}.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse}td,th{padding:6px;border-bottom:1px solid var(--bd);text-align:left;font-size:13px}
+.s-ok{color:var(--ok);font-weight:600}.s-wa{color:var(--wa);font-weight:600}.s-er{color:var(--er);font-weight:600}
+.rc{font:12px/1.4 ui-monospace,Menlo,monospace;background:#fff;color:#000;padding:12px;width:300px;margin:auto;white-space:pre-wrap}
+#login{margin:auto;width:min(340px,92%);text-align:center}.pin{letter-spacing:12px;text-align:center;font-size:26px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--pr2);color:#fff;padding:10px 18px;border-radius:10px;z-index:20}
+@media(max-width:820px){main{flex-direction:column}.R{width:100%;border-left:0;border-top:1px solid var(--bd);max-height:48%}}
+@media print{body *{visibility:hidden}.rc,.rc *{visibility:visible}.rc{position:absolute;left:0;top:0}}
+</style></head><body><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),K=n=>'KES '+Math.round(n).toLocaleString('en-KE');
+const CATS=['Beauty','Gas & Refills','Mattresses','Beddings','Phone Accessories','Electronics','Appliances','Utensils'];
+const SEED=[
+['Beauty','Shea Body Lotion 400ml',650,420,'🧴',24,'BT001'],['Beauty','Hair Relaxer Kit',900,600,'💇',12,'BT002'],['Beauty','Rose Perfume 50ml',1500,950,'🌹',3,'BT003'],
+['Gas & Refills','Gas Refill 6kg',1300,1150,'🔥',30,'GS006R'],['Gas & Refills','Gas Refill 13kg',2800,2500,'🔥',25,'GS013R'],['Gas & Refills','New Cylinder 6kg + Gas',4800,4200,'🛢️',8,'GS006N'],['Gas & Refills','New Cylinder 13kg + Gas',7200,6400,'🛢️',5,'GS013N'],
+['Mattresses','Mattress 5x6 Medium Duty',11500,8800,'🛏️',6,'MT056'],['Mattresses','Mattress 6x6 Orthopaedic',24500,19000,'🛏️',2,'MT066'],
+['Beddings','Duvet Set 5x6',3200,2200,'🛌',15,'BD001'],['Beddings','Bedsheet Cotton 6x6',1800,1100,'🧺',20,'BD002'],['Beddings','Fleece Blanket',1500,950,'🧣',10,'BD003'],
+['Phone Accessories','Phone Charger 20W',800,450,'🔌',40,'PA001'],['Phone Accessories','Earphones Wired',350,150,'🎧',50,'PA002'],['Phone Accessories','Power Bank 10000mAh',2200,1500,'🔋',14,'PA003'],['Phone Accessories','Phone Case',400,150,'📱',0,'PA004'],
+['Electronics','LED Bulb 12W',250,120,'💡',60,'EL001'],['Electronics','Extension Cable 5-way',900,550,'🔗',18,'EL002'],['Electronics','Bluetooth Speaker',2800,1900,'🔊',7,'EL003'],
+['Appliances','Electric Kettle 1.8L',1800,1200,'☕',11,'AP001'],['Appliances','Microwave 20L',9500,7200,'📦',4,'AP002'],['Appliances','Blender 1.5L',3800,2700,'🥤',9,'AP003'],
+['Utensils','Cooking Pot Set 6pc',4200,2900,'🍲',8,'UT001'],['Utensils','Plastic Basin 20L',450,250,'🪣',30,'UT002'],['Utensils','Dinner Set 24pc',3600,2400,'🍽️',6,'UT003']
+].map((p,i)=>({id:'p'+i,cat:p[0],name:p[1],price:p[2],cost:p[3],em:p[4],stock:p[5],sku:p[6]}));
+const USERS=[{n:'Wanjiru',pin:'1111',role:'cashier'},{n:'Brian',pin:'2222',role:'manager'},{n:'Owner',pin:'3333',role:'admin'}];
+const DB=JSON.parse(localStorage.getItem('dub_pos')||'null')||{products:SEED,sales:[],held:[],customers:[],shifts:[],cash:[],log:[],codes:[],seq:1000,cur:null};
+const save=()=>{try{localStorage.setItem('dub_pos',JSON.stringify(DB))}catch(e){}};
+let U=null,cart=[],disc={t:'amt',v:0},cust=null,cat='All',q='',view='sell',offline=!navigator.onLine,lock;
+const can=r=>U&&(r=='cashier'||(r=='manager'&&U.role!='cashier')||(r=='admin'&&U.role=='admin'));
+const log=a=>{DB.log.push({t:Date.now(),u:U?.n,a});save()};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2200)}
+function modal(h){const o=document.createElement('div');o.className='ov';o.innerHTML='<div class="md">'+h+'</div>';document.body.append(o);o.close=()=>o.remove();return o}
+const sub=()=>cart.reduce((a,l)=>a+l.price*l.qty,0);
+const dAmt=()=>Math.min(sub(),disc.t=='pct'?sub()*disc.v/100:disc.v);
+const total=()=>Math.round(sub()-dAmt());
+function resetLock(){clearTimeout(lock);if(U)lock=setTimeout(()=>{U=null;render()},300000)}
+['click','keydown','touchstart'].forEach(e=>addEventListener(e,resetLock));
+addEventListener('online',()=>{offline=false;toast('Back online. Synced.');render()});addEventListener('offline',()=>{offline=true;render()});
+
+function render(){
+ const a=$('#app');
+ if(!U){a.innerHTML='<div id="login" class="card"><h2 style="margin:0">DherikUrbanHome</h2><p style="color:var(--mu);margin:4px 0 14px">Matuguta · Enter staff PIN</p><input id="pin" class="pin" type="password" inputmode="numeric" maxlength="4" autofocus><p class="st">Demo PINs: cashier 1111, manager 2222, admin 3333</p></div>';
+  $('#pin').oninput=e=>{const u=USERS.find(x=>x.pin==e.target.value);if(u){U=u;log('login');render()}else if(e.target.value.length==4){e.target.value='';toast('Wrong PIN')}};return}
+ const nav=[['sell','Sell'],['sales','Sales'],['shift','Shift'],['stock','Stock']];
+ a.innerHTML=`<header><b>DherikUrbanHome POS</b><span class="pill ${offline?'off':'ok'}">${offline?'Offline':'Online'}</span>
+ ${nav.map(n=>`<button class="${view==n[0]?'on':''}" data-v="${n[0]}">${n[1]}</button>`).join('')}<span class="sp"></span>
+ <span>${U.n} (${U.role})</span><button id="th">◐</button><button id="lk">Lock</button></header><main id="m"></main>`;
+ a.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{view=b.dataset.v;render()});
+ $('#lk').onclick=()=>{U=null;render()};$('#th').onclick=()=>{const d=document.documentElement;d.dataset.theme=d.dataset.theme=='dark'?'light':'dark'};
+ ({sell:vSell,sales:vSales,shift:vShift,stock:vStock})[view]();
+}
+/* SELL */
+function vSell(){
+ $('#m').innerHTML=`<div class="L"><input id="q" placeholder="Search name, SKU or scan barcode (F2)" value="${q}"><div class="tabs">${['All',...CATS].map(c=>`<button class="${cat==c?'on':''}" data-c="${c}">${c}</button>`).join('')}</div><div class="grid" id="g"></div></div>
+ <div class="R"><div class="row"><button id="cu">${cust?'👤 '+cust.name:'+ Customer'}</button><button id="ms">+ Misc item</button></div><div class="cart" id="ct"></div>
+ <div class="tot" id="tt"></div><div class="row"><button id="hd">Hold</button><button id="rc">Recall (${DB.held.length})</button><button id="ds">Discount</button></div><button class="a chg" id="ch">Charge (F4)</button></div>`;
+ $('#m').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{cat=b.dataset.c;render()});
+ const qi=$('#q');qi.oninput=()=>{q=qi.value;grid()};
+ qi.onkeydown=e=>{if(e.key=='Enter'){const p=DB.products.find(p=>p.sku.toLowerCase()==qi.value.trim().toLowerCase());if(p){add(p);q='';qi.value='';grid()}}};
+ $('#ms').onclick=miscItem;$('#cu').onclick=custPick;$('#hd').onclick=hold;$('#rc').onclick=recall;$('#ds').onclick=discount;$('#ch').onclick=charge;
+ grid();cartUI();
+}
+function grid(){
+ const s=q.toLowerCase(),L=DB.products.filter(p=>(cat=='All'||p.cat==cat)&&(!s||p.name.toLowerCase().includes(s)||p.sku.toLowerCase().includes(s)));
+ $('#g').innerHTML=L.map(p=>`<button class="tile" data-id="${p.id}"><span class="em">${p.em}</span><span class="n">${p.name}</span><span class="pr">${K(p.price)}</span><span class="st ${p.stock<=0?'out':p.stock<=5?'low':''}">${p.stock<=0?'Out of stock':p.stock<=5?'Low: '+p.stock+' left':p.stock+' in stock'}</span></button>`).join('')||'<p>No products found.</p>';
+ $('#g').querySelectorAll('.tile').forEach(b=>b.onclick=()=>add(DB.products.find(p=>p.id==b.dataset.id)));
+}
+function add(p){
+ const l=cart.find(x=>x.id==p.id),n=(l?l.qty:0)+1;
+ if(n>p.stock&&p.id[0]=='p'){if(!can('manager')){toast(p.stock<=0?'Out of stock. Ask a manager to override.':'Only '+p.stock+' left. Ask a manager.');return}
+  if(!confirm('Stock is '+p.stock+'. Override and sell anyway?'))return;log('stock override '+p.name)}
+ l?l.qty++:cart.push({id:p.id,name:p.name,price:p.price,cost:p.cost||0,qty:1});cartUI()}
+function cartUI(){
+ $('#ct').innerHTML=cart.map((l,i)=>`<div class="line"><div><b>${l.name}</b><br><span class="st">${K(l.price)} each</span></div><b>${K(l.price*l.qty)}</b><div class="q"><button data-d="${i}">−</button>${l.qty}<button data-u="${i}">+</button></div><button class="r" data-x="${i}">Remove</button></div>`).join('')||'<p class="st">Tap a product or scan a barcode to start.</p>';
+ $('#ct').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const l=cart[b.dataset.d];if(--l.qty<1)cart.splice(b.dataset.d,1);cartUI()});
+ $('#ct').querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{add(DB.products.find(p=>p.id==cart[b.dataset.u].id)||{id:'m',stock:9e9,...cart[b.dataset.u]})});
+ $('#ct').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{cart.splice(b.dataset.x,1);cartUI()});
+ $('#tt').innerHTML=`<div><span>Subtotal</span><span>${K(sub())}</span></div><div><span>Discount</span><span>−${K(dAmt())}</span></div><div class="big"><span>Total</span><span>${K(total())}</span></div>`;
+ $('#ch').disabled=!cart.length;
+}
+function miscItem(){const m=modal('<h3>Misc item</h3><input id="mn" placeholder="Item name"><input id="mp" type="number" inputmode="numeric" placeholder="Price (KES)"><div class="row"><button id="c">Cancel</button><button class="p" id="o">Add</button></div>');
+ m.querySelector('#c').onclick=m.close;m.querySelector('#o').onclick=()=>{const n=m.querySelector('#mn').value.trim(),p=+m.querySelector('#mp').value;if(!n||p<=0)return toast('Enter name and price');cart.push({id:'m'+Date.now(),name:n,price:p,cost:0,qty:1});m.close();cartUI()}}
+function discount(){if(!can('manager'))return toast('Manager PIN role needed for discounts');
+ const m=modal(`<h3>Discount</h3><div class="row"><select id="dt"><option value="amt">Amount (KES)</option><option value="pct">Percent (%)</option></select><input id="dv" type="number" value="${disc.v}"></div><div class="row"><button id="c">Cancel</button><button class="p" id="o">Apply</button></div>`);
+ m.querySelector('#c').onclick=m.close;m.querySelector('#o').onclick=()=>{disc={t:m.querySelector('#dt').value,v:Math.max(0,+m.querySelector('#dv').value)};log('discount '+disc.v+disc.t);m.close();cartUI()}}
+function custPick(){const m=modal(`<h3>Customer</h3><input id="cn" placeholder="Name"><input id="cp" placeholder="Phone 07XX…"><div class="st">Existing: ${DB.customers.map(c=>`<a href="#" data-p="${c.phone}">${c.name}</a>`).join(', ')||'none'}</div><div class="row"><button id="c">Cancel</button><button class="p" id="o">Attach</button></div>`);
+ m.querySelectorAll('[data-p]').forEach(a=>a.onclick=e=>{e.preventDefault();cust=DB.customers.find(c=>c.phone==a.dataset.p);m.close();render()});
+ m.querySelector('#c').onclick=m.close;m.querySelector('#o').onclick=()=>{const n=m.querySelector('#cn').value.trim(),p=ph(m.querySelector('#cp').value);if(!n||!p)return toast('Enter name and valid phone');
+  cust=DB.customers.find(c=>c.phone==p)||(DB.customers.push({name:n,phone:p,bal:0}),DB.customers.at(-1));save();m.close();render()}}
+function hold(){if(!cart.length)return;DB.held.push({cart,disc,cust,t:Date.now()});cart=[];disc={t:'amt',v:0};cust=null;save();toast('Sale held');render()}
+function recall(){if(!DB.held.length)return toast('No held sales');const m=modal('<h3>Held sales</h3>'+DB.held.map((h,i)=>`<button data-i="${i}">${new Date(h.t).toLocaleTimeString()} · ${h.cart.length} items · ${K(h.cart.reduce((a,l)=>a+l.price*l.qty,0))}${h.cust?' · '+h.cust.name:''}</button>`).join('')+'<button id="c">Close</button>');
+ m.querySelector('#c').onclick=m.close;m.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const h=DB.held.splice(b.dataset.i,1)[0];cart=h.cart;disc=h.disc;cust=h.cust;save();m.close();render()})}
+const ph=v=>{v=v.replace(/\D/g,'');if(/^0[17]\d{8}$/.test(v))return '254'+v.slice(1);if(/^254[17]\d{8}$/.test(v))return v;return null};
+/* PAYMENT */
+function charge(){
+ if(!cart.length)return;if(!DB.cur)return toast('Open a shift first (Shift tab)');
+ const T=total();let pays=[];const paid=()=>pays.reduce((a,p)=>a+p.amt,0);
+ const m=modal('');
+ const draw=()=>{const due=T-paid();
+  m.innerHTML=`<h3>Pay ${K(T)}</h3>${pays.length?`<div class="st">Paid: ${pays.map(p=>p.m+' '+K(p.amt)).join(', ')}</div><b>Remaining ${K(due)}</b>`:''}
+  <div class="row"><button data-m="cash">Cash</button><button data-m="stk" ${offline?'disabled title="Needs internet"':''}>M-Pesa STK</button><button data-m="till" ${offline?'disabled':''}>Till/Paybill</button><button data-m="credit">Credit</button></div>
+  ${offline?'<div class="st s-er">Offline: M-Pesa is unavailable. Cash sales still work and are saved on this device.</div>':''}<div id="pb"></div><button id="x">Cancel</button>`;
+  m.querySelector('#x').onclick=m.close;
+  if(due<=0){finish(pays,T);m.close();return}
+  m.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>method(b.dataset.m,due));};
+ const method=(k,due)=>{const pb=m.querySelector('#pb');
+  const amt=`<label class="st">Amount for this payment</label><input id="am" type="number" value="${due}">`;
+  if(k=='cash'){pb.innerHTML=`<label class="st">Cash received</label><input id="am" type="number" value="${due}"><div class="q5">${[100,200,500,1000,2000,due].map(v=>`<button data-v="${v}">${v==due?'Exact':v}</button>`).join('')}</div><div id="chg" class="big s-ok"></div><button class="g" id="go">Confirm cash</button>`;
+   const upd=()=>{const r=+pb.querySelector('#am').value;pb.querySelector('#chg').textContent=r>=due?'Change: '+K(r-due):'Short by '+K(due-r)};upd();
+   pb.querySelector('#am').oninput=upd;pb.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{pb.querySelector('#am').value=b.dataset.v;upd()});
+   pb.querySelector('#go').onclick=()=>{const r=+pb.querySelector('#am').value;if(r<=0)return;const use=Math.min(r,due);pays.push({m:'Cash',amt:use,given:r,change:r>due?r-due:0});draw()}}
+  if(k=='stk'){pb.innerHTML=`${amt}<input id="ph" placeholder="Customer phone 07XX / 01XX / 2547XX" value="${cust?.phone||''}"><button class="p" id="go">Send STK Push</button><div id="stt"></div>`;
+   pb.querySelector('#go').onclick=()=>{const n=ph(pb.querySelector('#ph').value),a=Math.min(due,+pb.querySelector('#am').value);if(!n)return toast('Invalid phone');
+    const s=pb.querySelector('#stt');s.innerHTML=`<p class="s-wa">Waiting for customer to enter PIN on ${n}…</p><div class="st">Demo mode: no real Safaricom call is made.</div><div class="row"><button class="g" id="ok">Simulate success</button><button class="r" id="no">Simulate failure</button></div>`;
+    s.querySelector('#ok').onclick=()=>{pays.push({m:'M-Pesa STK',amt:a,code:'S'+Math.random().toString(36).slice(2,11).toUpperCase(),phone:n});draw()};
+    s.querySelector('#no').onclick=()=>{s.innerHTML='<p class="s-er">Payment failed or cancelled.</p><button class="p" id="rt">Retry</button> <button id="sw">Use another method</button>';s.querySelector('#rt').onclick=()=>method('stk',due);s.querySelector('#sw').onclick=()=>draw()}}}
+  if(k=='till'){const inc=['QKA7T2X9LM','QKB3N8P4ZR'].filter(c=>!DB.codes.includes(c));
+   pb.innerHTML=`${amt}<input id="cd" placeholder="M-Pesa code (e.g. QKA7T2X9LM)" style="text-transform:uppercase"><div class="st">Incoming (demo): ${inc.map(c=>`<a href="#" data-c="${c}">${c}</a>`).join(' ')||'none'}</div><button class="g" id="go">Confirm payment</button>`;
+   pb.querySelectorAll('[data-c]').forEach(a=>a.onclick=e=>{e.preventDefault();pb.querySelector('#cd').value=a.dataset.c});
+   pb.querySelector('#go').onclick=()=>{const c=pb.querySelector('#cd').value.trim().toUpperCase();if(!/^[A-Z0-9]{10}$/.test(c))return toast('Code must be 10 letters/digits');if(DB.codes.includes(c)||pays.some(p=>p.code==c))return toast('That code was already used on another sale');
+    pays.push({m:'M-Pesa Till',amt:Math.min(due,+pb.querySelector('#am').value),code:c});draw()}}
+  if(k=='credit'){if(!cust)return pb.innerHTML='<p class="s-er">Attach a customer first (close and tap + Customer).</p>';
+   pb.innerHTML=`<p>Add ${K(due)} to ${cust.name}'s account (balance ${K(cust.bal)})?</p><button class="p" id="go">Record on credit</button>`;pb.querySelector('#go').onclick=()=>{pays.push({m:'Credit',amt:due});draw()}}};
+ draw();
+}
+function finish(pays,T){
+ const s={no:'R'+(++DB.seq),t:Date.now(),cashier:U.n,source:'POS',items:cart.map(l=>({...l})),sub:sub(),disc:dAmt(),total:T,pays,cust:cust&&{name:cust.name,phone:cust.phone},status:'paid',shift:DB.cur.id,synced:!offline};
+ s.items.forEach(l=>{const p=DB.products.find(p=>p.id==l.id);if(p)p.stock-=l.qty});
+ pays.forEach(p=>{if(p.code)DB.codes.push(p.code);if(p.m=='Credit'){DB.customers.find(c=>c.phone==cust.phone).bal+=p.amt}});
+ DB.sales.push(s);save();cart=[];disc={t:'amt',v:0};cust=null;render();receipt(s)}
+function rtext(s){const W=32,ln=(a,b)=>a+' '.repeat(Math.max(1,W-a.length-b.length))+b;
+ return ['DHERIKURBANHOME','MATUGUTA','Tel 0758270793 / 0721620227','-'.repeat(W),'Receipt: '+s.no+(s.status=='refunded'?' (REFUNDED)':''),new Date(s.t).toLocaleString('en-KE'),'Cashier: '+s.cashier,s.cust?'Customer: '+s.cust.name:'','-'.repeat(W),
+ ...s.items.map(l=>l.name+'\n'+ln('  '+l.qty+' x '+Math.round(l.price),Math.round(l.qty*l.price).toLocaleString())),'-'.repeat(W),
+ ln('Subtotal',Math.round(s.sub).toLocaleString()),s.disc?ln('Discount','-'+Math.round(s.disc)):'',ln('TOTAL KES',s.total.toLocaleString()),'-'.repeat(W),
+ ...s.pays.map(p=>ln(p.m,Math.round(p.amt).toLocaleString())+(p.code?'\n  M-Pesa code: '+p.code:'')+(p.change?'\n  Change: '+p.change:'')),'','Thank you for shopping with us!','WhatsApp 0758270793'].filter(x=>x!=='').join('\n')}
+function receipt(s){const t=rtext(s),m=modal(`<div class="rc">${t.replace(/</g,'&lt;')}</div><div class="row"><button class="p" id="pr">Print</button><button id="wa">WhatsApp</button><button id="nw" class="a">New sale</button></div>`);
+ m.querySelector('#pr').onclick=()=>print();m.querySelector('#nw').onclick=m.close;
+ m.querySelector('#wa').onclick=()=>{const n=s.cust?.phone||prompt('Customer WhatsApp number');const p=n&&ph(n);if(p)open('https://wa.me/'+p+'?text='+encodeURIComponent(t))}}
+/* SALES */
+function vSales(){const L=[...DB.sales].reverse();
+ $('#m').innerHTML=`<div class="pg"><input id="sq" placeholder="Find by receipt no, phone or customer" style="margin-bottom:10px"><div class="card" style="overflow:auto"><table><thead><tr><th>Receipt</th><th>Time</th><th>Source</th><th>Pay</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody id="sb"></tbody></table></div></div>`;
+ const draw=()=>{const f=$('#sq').value.toLowerCase();$('#sb').innerHTML=L.filter(s=>!f||(s.no+(s.cust?.phone||'')+(s.cust?.name||'')).toLowerCase().includes(f)).map(s=>`<tr><td>${s.no}</td><td>${new Date(s.t).toLocaleString('en-KE')}</td><td>${s.source}</td><td>${[...new Set(s.pays.map(p=>p.m))].join('+')}</td><td>${K(s.total)}</td><td class="${s.status=='paid'?'s-ok':'s-er'}">${s.status}</td><td><button data-r="${s.no}">Reprint</button> ${s.status=='paid'?`<button class="r" data-f="${s.no}">Refund</button>`:''}</td></tr>`).join('')||'<tr><td colspan=7>No sales yet.</td></tr>';
+  $('#sb').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>receipt(DB.sales.find(s=>s.no==b.dataset.r)));
+  $('#sb').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>refund(DB.sales.find(s=>s.no==b.dataset.f)))};
+ $('#sq').oninput=draw;draw()}
+function refund(s){if(!can('manager'))return toast('Manager approval needed for refunds');
+ const m=modal(`<h3>Refund ${s.no} (${K(s.total)})</h3><input id="rs" placeholder="Reason (required)"><label><input type="checkbox" id="dm" style="width:auto"> Items damaged (do not restock)</label><select id="rm"><option>Cash</option><option>M-Pesa (manual record)</option></select><div class="row"><button id="c">Cancel</button><button class="r" id="o">Refund in full</button></div>`);
+ m.querySelector('#c').onclick=m.close;m.querySelector('#o').onclick=()=>{const r=m.querySelector('#rs').value.trim();if(!r)return toast('Enter a reason');
+  s.status='refunded';s.refund={reason:r,method:m.querySelector('#rm').value,by:U.n,t:Date.now(),shift:DB.cur?.id};
+  if(!m.querySelector('#dm').checked)s.items.forEach(l=>{const p=DB.products.find(p=>p.id==l.id);if(p)p.stock+=l.qty});
+  log('refund '+s.no+' '+r);save();m.close();render()}}
+/* SHIFT */
+function vShift(){const sh=DB.cur;
+ if(!sh){$('#m').innerHTML=`<div class="pg"><div class="card"><h3>Open shift</h3><input id="fl" type="number" placeholder="Opening cash float (KES)"><br><br><button class="a" id="o">Open shift</button></div></div>`;
+  $('#o').onclick=()=>{DB.cur={id:'S'+Date.now(),cashier:U.n,open:Date.now(),float:+$('#fl').value||0};log('shift open');save();render()};return}
+ const z=zrep(sh);
+ $('#m').innerHTML=`<div class="pg"><div class="card"><h3>Shift ${sh.cashier} · since ${new Date(sh.open).toLocaleTimeString()}</h3><table>${Object.entries({'Total sales':K(z.total),'Cash sales':K(z.cash),'M-Pesa sales':K(z.mp),'Credit sales':K(z.cr),'Refunds':K(z.ref),'Discounts':K(z.dis),'Opening float':K(sh.float),'Cash in/out':K(z.io),'Expected cash':K(z.exp)}).map(([a,b])=>`<tr><td>${a}</td><td><b>${b}</b></td></tr>`).join('')}</table></div>
+ <div class="card"><h3>Cash in / out</h3><div class="row"><select id="io"><option value="1">Cash in</option><option value="-1">Cash out (expense/banking)</option></select><input id="ia" type="number" placeholder="Amount"><input id="ir" placeholder="Reason"></div><br><button id="ig">Record</button></div>
+ <div class="card"><h3>Close shift</h3><input id="cc" type="number" placeholder="Counted cash (KES)"><br><br><button class="p" id="cl">Close shift and show Z report</button></div></div>`;
+ $('#ig').onclick=()=>{const a=+$('#ia').value,r=$('#ir').value.trim();if(!a||!r)return toast('Amount and reason required');DB.cash.push({shift:sh.id,amt:a*$('#io').value,r,t:Date.now()});log('cash io '+a+' '+r);save();render()};
+ $('#cl').onclick=()=>{const c=$('#cc').value;if(c==='')return toast('Enter counted cash');const v=+c-z.exp;sh.close=Date.now();sh.counted=+c;sh.variance=v;DB.shifts.push(sh);DB.cur=null;log('shift close var '+v);save();
+  const m=modal(`<h3>Z report</h3><div class="rc">Z REPORT · ${sh.cashier}\n${new Date(sh.open).toLocaleString()} to ${new Date(sh.close).toLocaleString()}\nTotal sales: ${Math.round(z.total)}\nCash: ${Math.round(z.cash)}  M-Pesa: ${Math.round(z.mp)}\nCredit: ${Math.round(z.cr)}  Refunds: ${Math.round(z.ref)}\nDiscounts: ${Math.round(z.dis)}\nExpected cash: ${Math.round(z.exp)}\nCounted: ${Math.round(sh.counted)}\nVariance: ${Math.round(v)}</div><div class="row"><button id="p" class="p">Print</button><button id="c">Done</button></div>`);
+  m.querySelector('#p').onclick=()=>print();m.querySelector('#c').onclick=()=>{m.close();render()}}}
+function zrep(sh){const S=DB.sales.filter(s=>s.shift==sh.id),P=m=>S.filter(s=>s.status=='paid').flatMap(s=>s.pays).filter(p=>m(p.m)).reduce((a,p)=>a+p.amt,0);
+ const ref=DB.sales.filter(s=>s.refund?.shift==sh.id),refCash=ref.filter(s=>s.refund.method=='Cash').reduce((a,s)=>a+s.total,0),io=DB.cash.filter(c=>c.shift==sh.id).reduce((a,c)=>a+c.amt,0);
+ const cash=P(m=>m=='Cash');return{total:S.filter(s=>s.status=='paid').reduce((a,s)=>a+s.total,0),cash,mp:P(m=>m.startsWith('M-Pesa')),cr:P(m=>m=='Credit'),ref:ref.reduce((a,s)=>a+s.total,0),dis:S.reduce((a,s)=>a+s.disc,0),io,exp:sh.float+cash-refCash+io}}
+/* STOCK */
+function vStock(){const mg=can('manager');
+ const profit=DB.sales.filter(s=>s.status=='paid').reduce((a,s)=>a+s.items.reduce((b,l)=>b+(l.price-l.cost)*l.qty,0)-s.disc,0);
+ $('#m').innerHTML=`<div class="pg"><div class="card">Sales total ${K(DB.sales.filter(s=>s.status=='paid').reduce((a,s)=>a+s.total,0))} · Est. profit ${K(profit)} · Credit owed ${K(DB.customers.reduce((a,c)=>a+c.bal,0))}</div>
+ <div class="card" style="overflow:auto"><table><thead><tr><th>Product</th><th>SKU</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody>${DB.products.map(p=>`<tr><td>${p.em} ${p.name}</td><td>${p.sku}</td><td>${K(p.price)}</td><td class="${p.stock<=0?'s-er':p.stock<=5?'s-wa':''}">${p.stock}</td><td>${mg?`<button data-a="${p.id}">Adjust</button>`:''}</td></tr>`).join('')}</tbody></table></div></div>`;
+ document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const p=DB.products.find(p=>p.id==b.dataset.a);
+  const m=modal(`<h3>${p.name}</h3><input id="n" type="number" placeholder="Change (+received / −damaged)"><select id="r"><option>Received stock</option><option>Damaged</option><option>Lost</option><option>Recount</option></select><div class="row"><button id="c">Cancel</button><button class="p" id="o">Save</button></div>`);
+  m.querySelector('#c').onclick=m.close;m.querySelector('#o').onclick=()=>{const n=+m.querySelector('#n').value;if(!n)return;p.stock+=n;log(`stock ${p.name} ${n} ${m.querySelector('#r').value}`);save();m.close();render()}})}
+addEventListener('keydown',e=>{if(!U||view!='sell')return;if(e.key=='F2'){e.preventDefault();$('#q')?.focus()}if(e.key=='F4'){e.preventDefault();charge()}if(e.key=='Escape')document.querySelector('.ov')?.remove()});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){}
+render();
+</script></body></html>
